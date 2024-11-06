@@ -6,29 +6,45 @@ export class PostgresUserRepository implements UserRepository {
   constructor(private readonly pool: Pool) {}
 
   async save(user: User): Promise<void> {
-    const query = `
-      INSERT INTO users (id, first_name, last_name, date_of_birth, phone, occupation, email, password)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      ON CONFLICT (id) DO UPDATE
-      SET first_name = EXCLUDED.first_name,
-          last_name = EXCLUDED.last_name,
-          date_of_birth = EXCLUDED.date_of_birth,
-          phone = EXCLUDED.phone,
-          occupation = EXCLUDED.occupation,
-          email = EXCLUDED.email,
-          password = EXCLUDED.password
-      RETURNING id
-    `;
-    const values = [
-      user.id,
-      user.firstName,
-      user.lastName,
-      user.dateOfBirth,
-      user.phone,
-      user.occupation,
-      user.email,
-      user.password,
-    ];
+    const query = user.id
+      ? `
+        INSERT INTO users (id, first_name, last_name, date_of_birth, phone, occupation, email, password)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        ON CONFLICT (id) DO UPDATE
+        SET first_name = EXCLUDED.first_name,
+            last_name = EXCLUDED.last_name,
+            date_of_birth = EXCLUDED.date_of_birth,
+            phone = EXCLUDED.phone,
+            occupation = EXCLUDED.occupation,
+            email = EXCLUDED.email,
+            password = EXCLUDED.password
+        RETURNING id
+      `
+      : `
+        INSERT INTO users (first_name, last_name, date_of_birth, phone, occupation, email, password)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id
+      `;
+    const values = user.id
+      ? [
+          user.id,
+          user.firstName,
+          user.lastName,
+          user.dateOfBirth,
+          user.phone,
+          user.occupation,
+          user.email,
+          user.password,
+        ]
+      : [
+          user.firstName,
+          user.lastName,
+          user.dateOfBirth,
+          user.phone,
+          user.occupation,
+          user.email,
+          user.password,
+        ];
     const result = await this.pool.query(query, values);
     if (!user.id) {
       user.id = result.rows[0].id;

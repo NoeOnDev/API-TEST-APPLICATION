@@ -8,7 +8,7 @@ import {
 const userRoutes = Router();
 
 userRoutes.get("/", getAllUsersController.handle.bind(getAllUsersController));
-userRoutes.put("/:id", updateUserController.handle.bind(updateUserController));
+userRoutes.patch("/:id", updateUserController.handle.bind(updateUserController));
 userRoutes.delete(
   "/:id",
   deleteUserController.handle.bind(deleteUserController)

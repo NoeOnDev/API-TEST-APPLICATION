@@ -7,13 +7,20 @@ export class PostgresUserRepository implements UserRepository {
 
   async save(user: User): Promise<void> {
     const query = `
-      INSERT INTO users (first_name, last_name, date_of_birth, phone, occupation, email, password)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO users (id, first_name, last_name, date_of_birth, phone, occupation, email, password)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       ON CONFLICT (id) DO UPDATE
-      SET first_name = $2, last_name = $3, date_of_birth = $4, phone = $5, occupation = $6, email = $7, password = $8
+      SET first_name = EXCLUDED.first_name,
+          last_name = EXCLUDED.last_name,
+          date_of_birth = EXCLUDED.date_of_birth,
+          phone = EXCLUDED.phone,
+          occupation = EXCLUDED.occupation,
+          email = EXCLUDED.email,
+          password = EXCLUDED.password
       RETURNING id
     `;
     const values = [
+      user.id,
       user.firstName,
       user.lastName,
       user.dateOfBirth,

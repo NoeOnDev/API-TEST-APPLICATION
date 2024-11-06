@@ -1,0 +1,11 @@
+node_modules
+
+.env
+
+.vscode
+
+dist
+build
+.dist
+
+package-lock.json

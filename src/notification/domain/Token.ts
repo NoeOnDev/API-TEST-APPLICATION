@@ -1,6 +1,6 @@
 export class Token {
   constructor(
-    public id: string,
+    public id: string | null,
     public userId: string,
     public code: string,
     public createdAt: Date,

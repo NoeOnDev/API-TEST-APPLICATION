@@ -11,13 +11,20 @@ import { LoginController } from "./http/controllers/LoginController";
 import { Argon2HashingService } from "./services/Argon2HashingService";
 import { JwtTokenService } from "./services/JwtTokenService";
 
+import { sendLoginVerification } from "../../notification/infrastructure/dependencyInjection";
+
 const userRepository = new PostgresUserRepository(pool);
 
 const hashingService = new Argon2HashingService();
 const tokenService = new JwtTokenService();
 
 const register = new Register(userRepository, hashingService);
-const login = new Login(userRepository, hashingService, tokenService);
+const login = new Login(
+  userRepository,
+  hashingService,
+  tokenService,
+  sendLoginVerification
+);
 
 const registerController = new RegisterController(register);
 const loginController = new LoginController(login);

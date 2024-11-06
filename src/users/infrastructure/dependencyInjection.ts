@@ -20,4 +20,4 @@ const updateUserController = new UpdateUserController(updateUser);
 const getAllUsersController = new GetAllUsersController(getAllUsers);
 const deleteUserController = new DeleteUserController(deleteUser);
 
-export { updateUserController, getAllUsersController, deleteUserController };
+export { updateUserController, getAllUsersController, deleteUserController, userRepository };

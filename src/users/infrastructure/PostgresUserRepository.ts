@@ -9,6 +9,8 @@ export class PostgresUserRepository implements UserRepository {
     const query = `
       INSERT INTO users (first_name, last_name, date_of_birth, phone, occupation, email, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ON CONFLICT (id) DO UPDATE
+      SET first_name = $2, last_name = $3, date_of_birth = $4, phone = $5, occupation = $6, email = $7, password = $8
       RETURNING id
     `;
     const values = [
@@ -61,6 +63,24 @@ export class PostgresUserRepository implements UserRepository {
       row.occupation,
       row.email,
       row.password
+    );
+  }
+
+  async findAll(): Promise<User[]> {
+    const query = `SELECT * FROM users`;
+    const result = await this.pool.query(query);
+    return result.rows.map(
+      (row) =>
+        new User(
+          row.id,
+          row.first_name,
+          row.last_name,
+          new Date(row.date_of_birth),
+          row.phone,
+          row.occupation,
+          row.email,
+          row.password
+        )
     );
   }
 

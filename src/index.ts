@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helper/dbConnection";
 import { authRoutes } from "./auth/infrastructure/http/routes/authRoutes";
+import { userRoutes } from "./users/infrastructure/http/routes/userRoutes";
 
 export const app = express();
 const port = env.port.PORT;
@@ -26,6 +27,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
 
 connectWithRetry(10, 10000, () => {
   app.listen(port, () => {
